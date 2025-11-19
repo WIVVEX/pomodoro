@@ -1,0 +1,24 @@
+services:
+
+  db:
+    image: postgres:18.0
+    restart: always
+    shm_size: 128mb
+    ports:
+      - '5433:5432'
+    # or set shared memory limit when deploy via swarm stack
+    #volumes:
+    #  - type: tmpfs
+    #    target: /dev/shm
+    #    tmpfs:
+    #      size: 134217728 # 128*2^20 bytes = 128Mb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: pomodoro
+      POSTGRES_PASSWORD: password
+
+  cache:
+    image: redis:8.2.3-alpine
+    restart: always
+    ports:
+      - '6379:6379'
