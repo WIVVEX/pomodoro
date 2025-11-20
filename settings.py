@@ -7,9 +7,15 @@ class Settings(BaseSettings):
     DB_USER: str = 'postgres'
     DB_PASSWORD: str = 'password'
     DB_NAME: str = 'pomodoro'
+    DB_DRIVER: str = 'postgresql+psycopg2'
 
     CACHE_HOST: str = '127.0.0.1'
-    CACHE_PORT: int = 6279
+    CACHE_PORT: int = 6379
     CACHE_DB: int = 0
+
+    @property
+    def db_url(self):
+        return f"{self.DB_DRIVER}://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+    
 
     
