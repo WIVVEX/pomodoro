@@ -1,8 +1,9 @@
 from typing import Annotated
-from fastapi import APIRouter, status, Depends
-from schema.task import TaskSchema
+from fastapi import APIRouter, status, Depends, HTTPException
+from exceptions import TaskNotFound
+from schema import TaskCreateSchema, TaskSchema
 from repository import TaskRepository
-from dependecy import get_tasks_repository, get_task_service
+from dependecy import get_tasks_repository, get_task_service, get_request_user_id
 from service.task import TaskService
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
@@ -16,10 +17,10 @@ async def get_tasks(task_service: Annotated[TaskService, Depends(get_task_servic
 
 @router.post("/", response_model=TaskSchema)
 async def create_task(
-            task : TaskSchema,
-            task_repository: Annotated[TaskRepository, Depends(get_tasks_repository)]):
-    task_id = task_repository.create_task(task)
-    task.id = task_id
+            body : TaskCreateSchema,
+            task_service: Annotated[TaskService, Depends(get_task_service)],
+            user_id: int = Depends(get_request_user_id)):
+    task = task_service.create_task(body, user_id)
     return task
 
 
@@ -27,11 +28,16 @@ async def create_task(
 async def patch_task(
             task_id: int, 
             name: str, 
-            task_repository: Annotated[TaskRepository, Depends(get_tasks_repository)]):
+            task_service: Annotated[TaskService, Depends(get_task_service)],
+            user_id: int = Depends(get_request_user_id)):
     
-
-    updated_task = task_repository.update_task_name(task_id, name)
-    return updated_task
+    try:
+        return task_service.update_task_name(task_id=task_id, name=name, user_id=user_id)
+    except TaskNotFound as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=e.detail   
+        )
 
     
 
@@ -42,8 +48,17 @@ async def patch_task(
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT )
 async def delete_task(
             task_id: int,
-            task_repository: Annotated[TaskRepository, Depends(get_tasks_repository)]):
-    task_repository.delete_task(task_id)
+            task_service: Annotated[TaskService, Depends(get_task_service)],
+            user_id: int = Depends(get_request_user_id)):
+    try:
+        task_service.delete_task(task_id=task_id, user_id=user_id)
+    except TaskNotFound as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=e.detail   
+        )
+
+
     return {"message" : "task deleted successfully"}
 
         

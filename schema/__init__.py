@@ -1,6 +1,5 @@
-from schema.task import TaskSchema
-from schema.user import UserLoginSchema
-from schema.user import UserCreateSchema
+from schema.task import TaskSchema, TaskCreateSchema
+from schema.user import UserLoginSchema, UserCreateSchema
 
 
-__all__  = ["TaskSchema", "UserLoginSchema", "UserCreateSchema"]
+__all__  = ["TaskSchema", "UserLoginSchema", "UserCreateSchema", "TaskCreateSchema"]
