@@ -41,6 +41,12 @@ def get_auth_service(
     return AuthService(user_repository=user_repository, settings=Settings(), google_client=google_client, yandex_client=yandex_client)
 
 
+
+def get_auth_service(
+        user_repository: UserRepository = Depends(get_user_repository)) -> AuthService:
+    return AuthService(user_repository=user_repository, settings=Settings())
+
+
 def get_user_service(
         user_repository: UserRepository = Depends(get_user_repository),
         auth_service: AuthService = Depends(get_auth_service)) -> UserService:
