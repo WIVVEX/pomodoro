@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     DB_USER: str = 'postgres'
     DB_PASSWORD: str = 'password'
     DB_NAME: str = 'pomodoro'
-    DB_DRIVER: str = 'postgresql+psycopg2'
+    DB_DRIVER: str = 'postgresql+asyncpg'
 
     CACHE_HOST: str = '127.0.0.1'
     CACHE_PORT: int = 6379
