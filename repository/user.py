@@ -2,6 +2,8 @@ from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from dataclasses import dataclass
 from models import UserProfile
+from schema import UserCreateSchema
+
 
 @dataclass
 class UserRepository:
@@ -15,8 +17,7 @@ class UserRepository:
    
     async def create_user(self, user: UserCreateSchema) -> UserProfile:
         query = insert(UserProfile).values(
-            username=username, 
-            password=password,
+            **user.model_dump(),
             ).returning(UserProfile.id)
         
         async with self.db_session as session:

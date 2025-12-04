@@ -5,10 +5,10 @@ import datetime as dt
 from datetime import timedelta
 from models import UserProfile
 from repository import UserRepository
-from schema import UserLoginSchema
+from schema import UserLoginSchema, UserCreateSchema
 from exceptions import TokenExpired, TokenNotCorrect, UserNotFoundException, UserNotCorrectPasswordException
 from settings import Settings
-
+from client import GoogleClient, YandexClient
 
 @dataclass
 class AuthService:

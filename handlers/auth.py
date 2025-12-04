@@ -1,5 +1,6 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import RedirectResponse
 from schema import UserLoginSchema, UserCreateSchema
 from service import AuthService
 from dependecy import get_auth_service
