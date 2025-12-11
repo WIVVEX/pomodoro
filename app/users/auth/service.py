@@ -55,10 +55,10 @@ class AuthService:
         print("user_create")
         return UserLoginSchema(user_id=created_user.id, access_token=access_token)
 
-    async def get_yandex_redirect_url(self) -> str:   
+    def get_yandex_redirect_url(self) -> str:   
         return self.settings.yandex_redirect_url
 
-    async def get_google_redirect_url(self) -> str:
+    def get_google_redirect_url(self) -> str:
         return self.settings.google_redirect_url
 
     async def login(self, username: str, password: str) -> UserLoginSchema:
@@ -76,13 +76,15 @@ class AuthService:
             raise UserNotCorrectPasswordException
     
 
-    def generate_access_token(self, user_id: int) -> str:
-        expires_date_unix = (dt.datetime.utcnow() + timedelta(days=7)).timestamp()  
-        token = jwt.encode(
-            {'user_id': user_id, 'expire' : expires_date_unix}, 
-            self.settings.JWT_SECRET_KEY, 
-            algorithm=self.settings.JWT_ENCODE_ALGORITHM)
-        return token
+    def generate_access_token(self, user_id: str) -> str:
+        payload = {
+            "user_id" : user_id,
+            "expire" : (dt.datetime.now(tz=dt.UTC) + timedelta(days=7)).timestamp()
+        }
+        encoded_jwt = jwt.encode(payload, self.settings.JWT_SECRET_KEY, algorithm=self.settings.JWT_ENCODE_ALGORITHM)
+        return encoded_jwt
+         
+
     
     def get_user_id_from_access_token(self, access_token: str) -> int:
         try:
@@ -90,6 +92,6 @@ class AuthService:
         except JWTError:
             raise TokenNotCorrect
 
-        if payload['expire'] < dt.datetime.utcnow().timestamp():
+        if payload['expire'] < dt.datetime.now(dt.UTC).timestamp():
             raise TokenExpired
         return payload["user_id"]
