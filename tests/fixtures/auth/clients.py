@@ -7,6 +7,10 @@ from app.users.auth.schema import GoogleUserData, YandexUserData
 from pytest_factoryboy import register
 from faker import Factory as FakerFactory
 
+from tests.fixtures.users.user_model import EXISTS_GOOGLE_USER_EMAIL, EXISTS_GOOGLE_USER_ID
+
+
+
 faker = FakerFactory.create()
 
 @dataclass
@@ -49,8 +53,8 @@ def yandex_client():
 
 def google_user_info_data() -> GoogleUserData:
     return GoogleUserData(
-        id=faker.random_int(),
-        email=faker.email(),
+        id=EXISTS_GOOGLE_USER_ID,
+        email=EXISTS_GOOGLE_USER_EMAIL,
         name=faker.name(),
         verified_email=True,
         access_token=faker.sha256()
