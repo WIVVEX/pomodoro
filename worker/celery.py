@@ -3,15 +3,15 @@ import ssl
 import time
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
+import time
 from celery import Celery
 from app.settings import Settings
 
 settings = Settings()
 
 celery = Celery(__name__)
-celery.conf.broker_url = settings.CELERY_REDIS_URL
-celery.conf.result_backend = settings.CELERY_REDIS_URL
+celery.conf.broker_url = settings.CELERY_BROKER_URL
+celery.conf.result_backend = "rpc://"
 
 
 
