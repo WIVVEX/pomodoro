@@ -9,11 +9,12 @@ pytestmark = pytest.mark.asyncio
 
 
 async def test_google_auth__login_not_exsist_user(auth_service, get_db_session):
-    session: AsyncSession = get_db_session
+
     code = "fake_code"
 
-    async with session as session:
+    async with get_db_session as session:
         users = (await session.execute(select(UserProfile))).scalars().all()
+        session.expire_all()
         
     user =  await auth_service.google_auth(code)
     
@@ -21,6 +22,7 @@ async def test_google_auth__login_not_exsist_user(auth_service, get_db_session):
     assert user is not None
     async with session as session:
         login_user = (await session.execute(select(UserProfile).where(UserProfile.id == user.user_id))).scalars().first()
+        session.expire_all()
 
     assert login_user is not None
 
