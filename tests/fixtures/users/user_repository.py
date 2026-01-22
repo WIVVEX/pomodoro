@@ -1,6 +1,5 @@
 import pytest
 from dataclasses import dataclass
-
 from app.users.user_profile.models import UserProfile
 from app.users.user_profile.schema import UserCreateSchema
 from tests.fixtures.users.user_model import UserProfileFactory
@@ -17,7 +16,7 @@ class FakeUserRepository():
             id="123",
             username="FakeUsername",
             password="FakePassword",
-            email="test@example.com",
+            email="delovoygrach@gmail.com",
             name="Test Name")
     
     async def get_user_by_username(self, username: str) -> UserProfile:

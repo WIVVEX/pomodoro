@@ -26,6 +26,11 @@ class Settings(BaseSettings):
     YANDEX_REDIRECT_URI: str = ''
     YANDEX_TOKEN_URL: str = 'https://oauth.yandex.ru/token'
 
+    AMQP_URL: str = "amqp://guest:guest@localhost:5672//" 
+ 
+    
+
+
     @property
     def db_url(self):
         return f"{self.DB_DRIVER}://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
