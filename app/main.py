@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.concurrency import asynccontextmanager
-from app.consumer import make_aqmp_consumer
+
+from app.dependecy import get_broker_consumer
 from app.tasks.handlers import router as tasks_router
 from app.users.user_profile.handlers import router as user_router
 from app.users.auth.handlers import router as auth_router
@@ -10,7 +11,8 @@ from app.users.auth.handlers import router as auth_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await make_aqmp_consumer()
+    broker_consumer = await get_broker_consumer()
+    await broker_consumer.consume_callback_message()
     yield
 
 
