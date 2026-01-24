@@ -2,8 +2,6 @@
 
 ---
 
-## 🇬🇧 English
-
 ### 📌 Description
 
 This is an **educational Todo application** built with **FastAPI**. The project is designed to demonstrate a clean backend architecture, modern Python tooling, and common patterns used in real-world web services.
@@ -66,7 +64,7 @@ app/
 ```bash
 # clone repository
 
-git clone <repo-url>
+git clone https://github.com/WIVVEX/pomodoro.git
 cd project
 
 # install dependencies
@@ -130,6 +128,3 @@ This project is **not a tutorial or a guide**, but a hands-on learning project b
 
 ---
 
-
-
-Проект **не является пособием или учебником**, а представляет собой практическую работу, выполненную в процессе обучения.
