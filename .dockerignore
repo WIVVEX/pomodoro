@@ -1,0 +1,9 @@
+.venv
+__pycache__
+.git
+Makefile
+alembic
+alembic.ini
+docker-compose.test.yml
+docker-compose.yml
+tests

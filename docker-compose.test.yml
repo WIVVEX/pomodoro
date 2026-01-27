@@ -24,7 +24,7 @@ services:
       - '6379:6379'
 
   
-  zookeeper:
+  zookeeper-test:
     platform: linux/x86_64
     image: confluentinc/cp-zookeeper:7.3.2
     hostname: zoo1
@@ -36,7 +36,7 @@ services:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_SERVERS: zoo1:2888:3888
 
-  kafka:
+  kafka-test:
     platform: linux/x86_64
     image: confluentinc/cp-kafka:7.3.2
     hostname: kafka1
@@ -62,7 +62,7 @@ services:
     depends_on:
       - zookeeper
 
-  schemaregistry:
+  schemaregistry-test:
     platform: linux/x86_64
     image: pravega/schemaregistry
     restart: always
@@ -75,7 +75,7 @@ services:
     ports:
       - 18085:8085
 #
-  kafdrop:
+  kafdrop-test:
     platform: linux/x86_64
     image: obsidiandynamics/kafdrop:3.31.0-SNAPSHOT
     depends_on:
