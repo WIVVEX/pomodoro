@@ -43,11 +43,6 @@ dependencies = [
     "aiokafka>=0.13.0,<0.14.0",
 ]
 
-[tool.poetry]
-packages = [
-    { include = "pomodoro_poetry", from = "src" }
-]
-
 [tool.poetry.dev-dependencies]
 black = ">=26.1.0,<27.0.0"
 ruff = ">=0.14.14,<0.15.0"
