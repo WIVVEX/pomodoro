@@ -48,6 +48,10 @@ packages = [
     { include = "pomodoro_poetry", from = "src" }
 ]
 
+[tool.poetry.dev-dependencies]
+black = ">=26.1.0,<27.0.0"
+ruff = ">=0.14.14,<0.15.0"
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"

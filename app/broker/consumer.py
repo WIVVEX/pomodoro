@@ -12,7 +12,7 @@ class BrokerConsumer:
     async def _get_consumer(self) -> AIOKafkaConsumer:
         if self.consumer is None:
             self.consumer = AIOKafkaConsumer(
-                self.email_callback_topic,              
+                self.email_callback_topic,
                 bootstrap_servers=self.bootstrap_servers,
                 enable_auto_commit=True,
                 value_deserializer=lambda v: json.loads(v.decode("utf-8")),

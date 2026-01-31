@@ -1,6 +1,7 @@
 from redis import asyncio as redis
 from app.settings import Settings
 
+
 def get_redis_connection() -> redis.Redis:
     settings = Settings()
     return redis.Redis(
@@ -8,4 +9,3 @@ def get_redis_connection() -> redis.Redis:
         port=settings.CACHE_PORT,
         db=settings.CACHE_DB,
     )
-

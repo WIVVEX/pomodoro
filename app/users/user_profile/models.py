@@ -2,6 +2,7 @@ from app.infrastructure.database import Base
 from sqlalchemy.orm import Mapped, mapped_column
 from typing import Optional
 
+
 class UserProfile(Base):
     __tablename__ = "UserProfile"
 
@@ -12,4 +13,3 @@ class UserProfile(Base):
     google_access_token: Mapped[Optional[str]]
     email: Mapped[Optional[str]]
     name: Mapped[Optional[str]]
-

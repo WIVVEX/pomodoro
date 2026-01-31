@@ -13,6 +13,7 @@ class Tasks(Base):
     category_id: Mapped[int]
     user_id: Mapped[int] = mapped_column(ForeignKey("UserProfile.id"), nullable=False)
 
+
 class Categories(Base):
     __tablename__ = "Categories"
 

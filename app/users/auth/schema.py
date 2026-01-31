@@ -8,6 +8,7 @@ class GoogleUserData(BaseModel):
     name: str
     access_token: str
 
+
 class YandexUserData(BaseModel):
     id: int
     login: str

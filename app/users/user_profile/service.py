@@ -10,7 +10,6 @@ class UserService:
     user_repository: UserRepository
     auth_service: AuthService
 
-
     async def create_user(self, username: str, password: str) -> UserLoginSchema:
         user_data = UserCreateSchema(username=username, password=password)
         user = await self.user_repository.create_user(user_data)

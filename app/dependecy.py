@@ -1,6 +1,4 @@
-import asyncio
 import httpx
-from aiokafka import AIOKafkaProducer
 from fastapi import Depends, Security, security, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.broker import BrokerProducer, BrokerConsumer
@@ -17,13 +15,13 @@ from app.users.user_profile.service import UserService
 from app.settings import Settings
 
 
-
 async def get_broker_consumer() -> BrokerConsumer:
     settings = Settings()
     return BrokerConsumer(
         bootstrap_servers=settings.BROKER_URL,
-        email_callback_topic=settings.EMAIL_CALLBACK_TOPIC
+        email_callback_topic=settings.EMAIL_CALLBACK_TOPIC,
     )
+
 
 async def get_broker_producer() -> BrokerProducer:
     settings = Settings()
@@ -32,96 +30,111 @@ async def get_broker_producer() -> BrokerProducer:
         email_topic=settings.EMAIL_CALLBACK_TOPIC,
     )
 
-async def get_mail_client(
-        broker_producer: BrokerProducer = Depends(get_broker_producer),
 
-       ) -> MailClient:
+async def get_mail_client(
+    broker_producer: BrokerProducer = Depends(get_broker_producer),
+) -> MailClient:
     return MailClient(settings=Settings(), broker_producer=broker_producer)
 
-async def get_tasks_repository(db_session: AsyncSession = Depends(get_db_session)) -> TaskRepository:
+
+async def get_tasks_repository(
+    db_session: AsyncSession = Depends(get_db_session),
+) -> TaskRepository:
     return TaskRepository(db_session)
+
 
 async def get_tasks_cache_repository() -> TaskCache:
     redis_connection = get_redis_connection()
     return TaskCache(redis_connection)
 
-async def get_task_service(
-        task_repository: TaskRepository = Depends(get_tasks_repository),
-        task_cache: TaskCache = Depends(get_tasks_cache_repository)
-) -> TaskService:
-    return TaskService(task_repository=task_repository,
-                       task_cache=task_cache)
 
-async def get_user_repository(db_session: AsyncSession = Depends(get_db_session)) -> UserRepository:
+async def get_task_service(
+    task_repository: TaskRepository = Depends(get_tasks_repository),
+    task_cache: TaskCache = Depends(get_tasks_cache_repository),
+) -> TaskService:
+    return TaskService(task_repository=task_repository, task_cache=task_cache)
+
+
+async def get_user_repository(
+    db_session: AsyncSession = Depends(get_db_session),
+) -> UserRepository:
     return UserRepository(db_session=db_session)
+
 
 def get_google_client() -> GoogleClient:
     return GoogleClient(settings=Settings())
 
+
 def get_yandex_client() -> YandexClient:
     return YandexClient(settings=Settings())
 
-def get_auth_service(
-        user_repository: UserRepository = Depends(get_user_repository),
-        google_client: GoogleClient = Depends(get_google_client),
-        yandex_client: YandexClient = Depends(get_yandex_client)
-        ) -> AuthService:
 
-    return AuthService(user_repository=user_repository, settings=Settings(), google_client=google_client, yandex_client=yandex_client)
+def get_auth_service(
+    user_repository: UserRepository = Depends(get_user_repository),
+    google_client: GoogleClient = Depends(get_google_client),
+    yandex_client: YandexClient = Depends(get_yandex_client),
+) -> AuthService:
+
+    return AuthService(
+        user_repository=user_repository,
+        settings=Settings(),
+        google_client=google_client,
+        yandex_client=yandex_client,
+    )
 
 
 async def get_async_client() -> httpx.AsyncClient:
     return httpx.AsyncClient()
 
-async def get_google_client(async_client: httpx.AsyncClient = Depends(get_async_client)) -> GoogleClient:
+
+async def get_google_client(
+    async_client: httpx.AsyncClient = Depends(get_async_client),
+) -> GoogleClient:
     return GoogleClient(settings=Settings(), async_client=async_client)
 
-async def get_yandex_client(async_client: httpx.AsyncClient = Depends(get_async_client)) -> YandexClient:
+
+async def get_yandex_client(
+    async_client: httpx.AsyncClient = Depends(get_async_client),
+) -> YandexClient:
     return YandexClient(settings=Settings(), async_client=async_client)
 
+
 async def get_auth_service(
-        user_repository: UserRepository = Depends(get_user_repository),
-        google_client: GoogleClient = Depends(get_google_client),
-        yandex_client: YandexClient = Depends(get_yandex_client),
-        mail_client: MailClient = Depends(get_mail_client)
-        ) -> AuthService:
+    user_repository: UserRepository = Depends(get_user_repository),
+    google_client: GoogleClient = Depends(get_google_client),
+    yandex_client: YandexClient = Depends(get_yandex_client),
+    mail_client: MailClient = Depends(get_mail_client),
+) -> AuthService:
 
     return AuthService(
-        user_repository=user_repository, 
-        settings=Settings(), 
-        google_client=google_client, 
+        user_repository=user_repository,
+        settings=Settings(),
+        google_client=google_client,
         yandex_client=yandex_client,
-        mail_client=mail_client
-        )
+        mail_client=mail_client,
+    )
 
 
 async def get_user_service(
-        user_repository: UserRepository = Depends(get_user_repository),
-        auth_service: AuthService = Depends(get_auth_service)) -> UserService:
+    user_repository: UserRepository = Depends(get_user_repository),
+    auth_service: AuthService = Depends(get_auth_service),
+) -> UserService:
     return UserService(user_repository=user_repository, auth_service=auth_service)
 
 
 reusable_oauth2 = security.HTTPBearer()
 
+
 async def get_request_user_id(
-        auth_service: AuthService = Depends(get_auth_service),
-        token: security.HTTPAuthorizationCredentials =  Security(reusable_oauth2)
-        ) -> int:
+    auth_service: AuthService = Depends(get_auth_service),
+    token: security.HTTPAuthorizationCredentials = Security(reusable_oauth2),
+) -> int:
     print(token.credentials)
     try:
         user_id = auth_service.get_user_id_from_access_token(token.credentials)
     except TokenExpired as e:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=e.detail
-        )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=e.detail)
     except TokenNotCorrect as e:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=e.detail
-        )
-        
-
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=e.detail)
 
     return user_id
-

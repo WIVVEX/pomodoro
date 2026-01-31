@@ -2,9 +2,6 @@ from typing import Any
 from sqlalchemy.orm import declared_attr, DeclarativeBase
 
 
-
-
-
 class Base(DeclarativeBase):
     id: Any
     __name__: str

@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import json
 from aiokafka import AIOKafkaProducer
 
+
 @dataclass
 class BrokerProducer:
     bootstrap_servers: str
@@ -10,9 +11,7 @@ class BrokerProducer:
 
     async def _get_producer(self) -> AIOKafkaProducer:
         if self.producer is None:
-            self.producer = AIOKafkaProducer(
-                bootstrap_servers=self.bootstrap_servers
-            )
+            self.producer = AIOKafkaProducer(bootstrap_servers=self.bootstrap_servers)
             await self.producer.start()
         return self.producer
 
@@ -22,7 +21,6 @@ class BrokerProducer:
             topic=self.email_topic,
             value=json.dumps(email_data).encode(),
         )
-        
 
     async def close(self):
         if self.producer:

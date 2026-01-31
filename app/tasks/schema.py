@@ -2,7 +2,7 @@ from pydantic import BaseModel, model_validator
 
 
 class TaskSchema(BaseModel):
-    id : int | None = None
+    id: int | None = None
     name: str | None = None
     pomodoro_count: int | None = None
     category_id: int
@@ -18,8 +18,7 @@ class TaskSchema(BaseModel):
         return self
 
 
-
 class TaskCreateSchema(BaseModel):
     name: str | None = None
     pomodoro_count: int | None = None
-    category_id: int  
+    category_id: int
