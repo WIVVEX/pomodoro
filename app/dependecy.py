@@ -60,14 +60,6 @@ async def get_user_repository(
 ) -> UserRepository:
     return UserRepository(db_session=db_session)
 
-
-def get_google_client() -> GoogleClient:
-    return GoogleClient(settings=Settings())
-
-
-def get_yandex_client() -> YandexClient:
-    return YandexClient(settings=Settings())
-
 async def get_async_client() -> httpx.AsyncClient:
     return httpx.AsyncClient()
 
