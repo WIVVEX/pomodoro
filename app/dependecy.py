@@ -68,21 +68,6 @@ def get_google_client() -> GoogleClient:
 def get_yandex_client() -> YandexClient:
     return YandexClient(settings=Settings())
 
-
-def get_auth_service(
-    user_repository: UserRepository = Depends(get_user_repository),
-    google_client: GoogleClient = Depends(get_google_client),
-    yandex_client: YandexClient = Depends(get_yandex_client),
-) -> AuthService:
-
-    return AuthService(
-        user_repository=user_repository,
-        settings=Settings(),
-        google_client=google_client,
-        yandex_client=yandex_client,
-    )
-
-
 async def get_async_client() -> httpx.AsyncClient:
     return httpx.AsyncClient()
 

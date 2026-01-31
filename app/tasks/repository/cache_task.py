@@ -15,4 +15,4 @@ class TaskCache:
     async def set_tasks(self, tasks: list[TaskSchema]):
         tasks_json = [task.json() for task in tasks]
         async with self.redis as redis:
-            await self.redis.lpush("tasks", *tasks_json)
+            await redis.lpush("tasks", *tasks_json)
